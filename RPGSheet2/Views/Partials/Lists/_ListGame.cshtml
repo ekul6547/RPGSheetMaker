@@ -1,0 +1,64 @@
+﻿@model SearchGame
+
+@{ 
+    string suffix = ((string)ViewData["suffix"]) ?? "";
+    bool expanded = ((bool?)ViewData["expanded"]) ?? false;
+    string expand = expanded.ToString().ToLower();
+    string collapse_class = expanded ? " in" : "";
+
+    bool owner = Model.OwnerID == User.GetUserId();
+    bool inGame = false;
+    if (User.IsLoggedIn())
+    {
+        inGame = Model.CurrentUsers.Contains(Extensions.GetUserName(User.GetUserId()));
+    }
+}
+<button class="btn btn-dark" type="button" data-toggle="collapse" data-target="#@Model.CollapseName(suffix)" aria-expanded="@expand" aria-controls="collapseExample" style="width:100%">
+    <span style="display:inline;font-size:larger;float:left">
+        <b>
+            @Model.GameName
+        </b>
+    </span>
+    <span style="float:right">
+        Player Count: @Model.CurrentUsers.Count()
+    </span>
+    <span style="float:right">
+        Owner: @Model.OwnerName
+        <span style="float:right;width:30px;display:inline-block"></span>
+    </span>
+</button>
+<div class="collapse container-fluid @collapse_class" id="@Model.CollapseName(suffix)">
+    <div class="row is-flex" style="height:150px">
+        <div class="col-md-8" style="padding:0px">
+            <pre style="margin-bottom:0px !important;background-color:white;height:100%">@Model.Description</pre>
+        </div>
+        <div class="col-md-4 border" style="margin:0px;padding:0px">
+            <div class="pre-scrollable border" style="height:100%">
+                <ul class="list-unstyled">
+                    @foreach (string s in Model.CurrentUsers)
+                    {
+                        <li>
+                            <span>@s</span>
+                        </li>
+                    }
+                </ul>
+            </div>
+            @if (owner)
+            {
+                <div class="row" style="margin:0px;padding:0px">
+                    <a asp-action="Details" asp-route-id="@Model.GameID" class="btn btn-primary col-sm-4">View Game</a>
+                    <a asp-action="Edit" asp-route-id="@Model.GameID" class="btn btn-success col-sm-4">Settings</a>
+                    <a asp-action="Delete" asp-route-id="@Model.GameID" class="btn btn-danger col-sm-4">Delete Game</a>
+                </div>
+            }
+            else if(inGame)
+            {
+                <a asp-controller="Games" asp-action="Details" asp-route-id="@Model.SearchID" class="btn btn-primary">View Game</a>
+            }
+            else
+            {
+                <a asp-controller="Games" asp-action="Join" asp-route-id="@Model.SearchID" class="btn btn-success">Request Join</a>
+            }
+        </div>
+    </div>
+</div>

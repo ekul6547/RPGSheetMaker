@@ -1,0 +1,33 @@
+﻿@model IEnumerable<RPGSheet2.Models.SearchGame>
+
+@{
+    bool titleExists = ViewData["Title"] != null;
+    ViewData["expanded"] = !titleExists;
+    ViewData["Title"] = titleExists ? ViewData["Title"] : "My Games";
+}
+<div class="row" style="margin-top:20px">
+    <div class="row">
+        <h2 class="col-lg-10">My Games</h2>
+        <div class="col-lg-2" style="margin-top:19px">
+            <a asp-controller="Games" asp-action="Create" class="btn btn-primary" style="width:100%">Create Game +</a>
+        </div>
+    </div>
+    <hr />
+    <ul class="list-unstyled">
+        @if (Model != null && Model.Count() > 0)
+        {
+            @foreach (var item in Model)
+            {
+                <li>
+                    @await Html.PartialAsync("/Views/Partials/Lists/_ListGame.cshtml", item, ViewData)
+                </li>
+            }
+        }
+        else
+        {
+            <p>
+                There are no games you have joined.
+            </p>
+        }
+    </ul>
+</div>
