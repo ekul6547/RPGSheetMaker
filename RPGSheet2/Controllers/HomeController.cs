@@ -43,12 +43,11 @@ namespace RPGSheet2.Controllers
             }
             else
             {
-                int[] results = (await _context.Games
+                Game[] results = (await _context.Games
                     .Include(g => g.Accesses)
                     .OrderBy(g => g.Accesses.Count)
                     .Skip(pageNumber.Value * searchLimit.Value)
                     .Take(searchLimit.Value)
-                    .Select(g => g.ID)
                     .ToArrayAsync());
 
                 ret = (SearchGame.GenerateMany(_context, results)).ToList();

@@ -38,11 +38,19 @@ namespace RPGSheet2
         }
         public static IdentityUser GetUser(string UserID)
         {
-            return _context.Users.Find(UserID);
+            return _context.Users.FirstOrDefault(u => u.Id == UserID);
+        }
+        public static async Task<IdentityUser> GetUserAsync(string UserID)
+        {
+            return await _context.Users.FirstOrDefaultAsync(u => u.Id == UserID);
         }
         public static string GetUserName(string UserID)
         {
-            return _context.Users.Find(UserID).UserName;
+            return _context.Users.FirstOrDefault(u => u.Id == UserID).UserName;
+        }
+        public static async Task<string> GetUserNameAsync(string UserID)
+        {
+            return (await _context.Users.FirstOrDefaultAsync(u => u.Id == UserID)).UserName;
         }
 
         public static IEnumerable<IdentityUser> GetUsersForGame(this Game game)
@@ -64,7 +72,7 @@ namespace RPGSheet2
             if (game.Accesses.Count == 0) return new string[0];
             string[] userIDS = game.Accesses.Select((a) => a.UserID).ToArray();
             if (userIDS != null && userIDS.Length > 0){
-                string[] names = _context.Users.Where((u) => userIDS.Contains(u.Id)).Select((u) => u.UserName).ToArray();
+                string[] names = await _context.Users.Where((u) => userIDS.Contains(u.Id)).Select((u) => u.UserName).ToArrayAsync();
                 if(names != null && names.Length > 0)
                 {
                     return names;
@@ -104,7 +112,7 @@ namespace RPGSheet2
             IEnumerable<GameAccess> accesses = _context.GetGameAccessForUser(UserID);
 
 
-            return (SearchGame.GenerateMany(_context,accesses.Select(g => g.game).ToArray())).ToList();
+            return (SearchGame.GenerateMany(_context,accesses.Select(g => g.game.ID).ToArray())).ToList();
         }
 
         

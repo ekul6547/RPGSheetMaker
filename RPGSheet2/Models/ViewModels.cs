@@ -25,26 +25,26 @@ namespace RPGSheet2.Models
         public IEnumerable<string> CurrentUsers { get; set; }
 
         //Done like this because it needs to do the .Include 's
-        public static SearchGame Generate(ApplicationDbContext _context, Game game)
+        public static async Task<SearchGame> Generate(ApplicationDbContext _context, Game game)
         {
-            return Generate(_context, game.ID);
+            return await Generate(_context, game.ID);
         }
-        public static SearchGame Generate(ApplicationDbContext _context, int GameID)
+        public static async Task<SearchGame> Generate(ApplicationDbContext _context, int GameID)
         {
-            return _gen(_context.Games.Include(g => g.Accesses).Include(g => g.gameSheet).ThenInclude(g => g.originalSheet).FirstOrDefault(g => g.ID == GameID));
+            return await _gen(_context.Games.Include(g => g.Accesses).Include(g => g.gameSheet).ThenInclude(g => g.originalSheet).FirstOrDefault(g => g.ID == GameID));
         }
-        public static SearchGame Generate(ApplicationDbContext _context, string GameID)
+        public static async Task<SearchGame> Generate(ApplicationDbContext _context, string GameID)
         {
-            return _gen(_context.Games.Include(g => g.Accesses).Include(g => g.gameSheet).ThenInclude(g => g.originalSheet).FirstOrDefault(g => g.SearchID == GameID));
+            return await _gen(_context.Games.Include(g => g.Accesses).Include(g => g.gameSheet).ThenInclude(g => g.originalSheet).FirstOrDefault(g => g.SearchID == GameID));
         }
         public static IEnumerable<SearchGame> GenerateMany(ApplicationDbContext _context, params int[] GameIDs)
         {
-            List<Game> games = (_context.Games.Include(g => g.Accesses).Include(g => g.gameSheet).ThenInclude(g => g.originalSheet)).Where(g => GameIDs.Contains(g.ID)).ToList();
+            List<Game> games = (_context.Games.Include(g => g.Accesses).Include(g => g.gameSheet).ThenInclude(g => g.originalSheet)).ToList();
             List<SearchGame> results = new List<SearchGame>();
             List<Task> tasks = new List<Task>();
             foreach(Game game in games)
             {
-                tasks.Add(Task.Run(() =>_gen(game,results)));
+                tasks.Add(_gen(game,results));
             }
             Task.WaitAll(tasks.ToArray());
             return results;
@@ -55,12 +55,12 @@ namespace RPGSheet2.Models
             List<Task> tasks = new List<Task>();
             foreach (Game game in games)
             {
-                tasks.Add(Task.Run(() => _gen(game, results)));
+                tasks.Add(_gen(game, results));
             }
             Task.WaitAll(tasks.ToArray());
             return results;
         }
-        private static SearchGame _gen(Game game, List<SearchGame> output=null)
+        private static async Task<SearchGame> _gen(Game game, List<SearchGame> output=null)
         {
             if (game == null) return null;
             SearchGame ret = new SearchGame();
@@ -70,13 +70,13 @@ namespace RPGSheet2.Models
             ret.SearchID = game.SearchID;
             ret.GameName = game.DisplayName;
             ret.OwnerID = game.OwnerID;
-            ret.OwnerName = Extensions.GetUser(game.OwnerID).UserName;
+            ret.OwnerName = (await Extensions.GetUserNameAsync(game.OwnerID));
             ret.Description = game.Description;
 
             if (game.HasSheet())
             {
                 ret.SheetName = game.gameSheet.DisplayName;
-                ret.SheetOwner = Extensions.GetUser(game.gameSheet.originalSheet.OwnerID).UserName;
+                ret.SheetOwner = await Extensions.GetUserNameAsync(game.gameSheet.originalSheet.OwnerID);
             }
             else
             {

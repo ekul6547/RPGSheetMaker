@@ -47,9 +47,9 @@ namespace RPGSheet2
         }
 
         // GET: Games/Join
-        public IActionResult Join(string id)
+        public async Task<IActionResult> Join(string id)
         {
-            SearchGame sgame = SearchGame.Generate(_context,id);
+            SearchGame sgame = await SearchGame.Generate(_context,id);
             if (sgame == null) return RedirectToAction(nameof(Index));
             return View(JoinGame.FromSearchGame(sgame, User.GetUserId()));
         }
