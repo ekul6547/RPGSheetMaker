@@ -1,0 +1,16 @@
+﻿@model List<IGrouping<string,TutorialPage>>
+
+@{
+    ViewData["TutorialBar"] = true;
+}
+
+<div class="navbar navbar-left nogap" style="height:100%;width:100%">
+    <ol class="list-unstyled nogap">
+        @foreach (IGrouping<string, TutorialPage> group in Model)
+        {
+            <li>
+                @await Html.PartialAsync("/Views/Tutorials/Partials/_TutNav_Group.cshtml", group, ViewData)
+            </li>
+        }
+    </ol>
+</div>

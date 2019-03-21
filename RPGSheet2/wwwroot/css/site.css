@@ -10,7 +10,6 @@ body {
 .body-content {
     padding-left: 15px;
     padding-right: 15px;
-}
 
 /* Carousel */
 .carousel-caption p {
@@ -83,4 +82,8 @@ flex-direction: column;
 .nogap {
     margin:0px;
     padding:0px;
+}
+
+.noborder {
+    border:0px none black;
 }

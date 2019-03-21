@@ -1,0 +1,23 @@
+﻿@model IGrouping<string, TutorialPage>
+
+@{ 
+    string collapseName = $"{Model.Key}_";
+}
+
+<button class="btn btn-dark" type="button" data-toggle="collapse" data-target="#@collapseName" aria-expanded="false" aria-controls="collapseExample" style="width:100%">
+    <span style="display:inline;font-size:larger;float:left">
+        <b>
+            @Model.Key
+        </b>
+    </span>
+</button>
+<div class="collapse container-fluid nogap" id="@collapseName" style="padding-right:0px">
+    <ul class="list-unstyled list-group nogap">
+        @foreach (TutorialPage p in Model)
+        {
+        <li class="list-group-item noborder" style="width:100%;padding:0px">
+            <a asp-controller="Tutorials" asp-action="Index" asp-route-id="@p.ID" class="btn btn-default" style="width:inherit;height:inherit">@p.Title</a>
+        </li>
+        }
+    </ul>
+</div>

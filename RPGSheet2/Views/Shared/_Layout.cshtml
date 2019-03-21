@@ -32,7 +32,7 @@
                 <ul class="nav navbar-nav">
                     <li><a asp-area="" asp-controller="Home" asp-action="Index">Home</a></li>
                     <li><a asp-area="" asp-controller="Games" asp-action="Index">My Games</a></li>
-                    <li><a asp-area="" asp-controller="Home" asp-action="About">About</a></li>
+                    <li><a asp-area="" asp-controller="Tutorials" asp-action="Index">Tutorials</a></li>
                     <li><a asp-area="" asp-controller="Home" asp-action="Contact">Contact</a></li>
                 </ul>
                 <partial name="_LoginPartial" />
@@ -42,14 +42,39 @@
 
     <partial name="_CookieConsentPartial" />
 
-    <div class="container body-content">
-        @RenderBody()
-        <hr />
-        <footer>
-            <p>&copy; 2019 - RPGSheet2</p>
-        </footer>
-    </div>
+    @{
+        bool? tutorialBar = ((bool?)ViewData["TutorialBar"]) ?? false;
+        if (!tutorialBar.HasValue)
+        {
+            tutorialBar = false;
+        }
 
+        List<IGrouping<string, TutorialPage>> TutorialNavData = ViewData["TutorialData"] as List<IGrouping<string, TutorialPage>>;
+        TutorialNavData = TutorialNavData ?? new List<IGrouping<string, TutorialPage>>();
+    }
+    @if (tutorialBar.Value)
+    {
+        <div class="listLeft col-lg-2" style="padding-left:0px">
+            @await Html.PartialAsync("/Views/Tutorials/Partials/_TutNav_List.cshtml", TutorialNavData, ViewData)
+        </div>
+        <div class="body-content col-lg-10">
+            @RenderBody()
+            <hr />
+            <footer>
+                <p>&copy; 2019 - RPGSheet2</p>
+            </footer>
+        </div>
+    }
+    else
+    {
+        <div class="container body-content">
+            @RenderBody()
+            <hr />
+            <footer>
+                <p>&copy; 2019 - RPGSheet2</p>
+            </footer>
+        </div>
+    }
     <environment include="Development">
         <script src="~/lib/jquery/dist/jquery.js"></script>
         <script src="~/lib/bootstrap/dist/js/bootstrap.js"></script>

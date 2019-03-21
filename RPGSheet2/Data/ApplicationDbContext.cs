@@ -26,6 +26,9 @@ namespace RPGSheet2.Data
         public DbSet<GameSheetField> GameSheetFields { get; set; }
         public DbSet<DropdownValue> DropdownValues { get; set; }
 
+        public DbSet<TutorialPage> TutorialPages { get; set; }
+        public DbSet<TutorialSection> TutorialSections { get; set; }
+
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
             : base(options)
         {
