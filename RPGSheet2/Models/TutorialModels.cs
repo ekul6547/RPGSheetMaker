@@ -20,6 +20,22 @@ namespace RPGSheet2.Models
     public class AddTutorialSection : TutorialSection
     {
         public int PageID { get; set; }
+
+        public AddTutorialSection()
+        {
+
+        }
+        public AddTutorialSection(TutorialSection section)
+        {
+            this.ID = section.ID;
+            this.Header = section.Header;
+            this.HTMLContent = section.HTMLContent;
+            this.Page = section.Page;
+            if(Page != null)
+            {
+                PageID = Page.ID;
+            }
+        }
     }
 
     public class TutorialPage

@@ -101,12 +101,13 @@ namespace RPGSheet2.Controllers
                 return NotFound();
             }
 
-            var tutorialPage = await _context.TutorialPages.FindAsync(id);
-            if (tutorialPage == null)
+            var tutorialSection = await _context.TutorialSections.Include(t => t.Page).FirstOrDefaultAsync(t => t.ID == id);
+            if (tutorialSection == null)
             {
                 return NotFound();
             }
-            return View(tutorialPage);
+            AddTutorialSection section = new AddTutorialSection(tutorialSection);
+            return View(section);
         }
 
         // POST: Tutorials/Edit/5
@@ -114,9 +115,9 @@ namespace RPGSheet2.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("ID,Title,Category")] TutorialPage tutorialPage)
+        public async Task<IActionResult> Edit(int id, [Bind("ID,Header,HTMLContent,PageID")] AddTutorialSection tutorialSection)
         {
-            if (id != tutorialPage.ID)
+            if (id != tutorialSection.ID)
             {
                 return NotFound();
             }
@@ -125,23 +126,17 @@ namespace RPGSheet2.Controllers
             {
                 try
                 {
-                    _context.Update(tutorialPage);
+                    TutorialSection section = tutorialSection;
+                    _context.Update(section);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!TutorialPageExists(tutorialPage.ID))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
+                    throw;
                 }
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction(nameof(Index),new { id = tutorialSection.PageID });
             }
-            return View(tutorialPage);
+            return View(tutorialSection);
         }
 
         // GET: Tutorials/Delete/5

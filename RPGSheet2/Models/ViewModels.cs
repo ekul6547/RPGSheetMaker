@@ -39,7 +39,7 @@ namespace RPGSheet2.Models
         }
         public static IEnumerable<SearchGame> GenerateMany(ApplicationDbContext _context, params int[] GameIDs)
         {
-            List<Game> games = (_context.Games.Include(g => g.Accesses).Include(g => g.gameSheet).ThenInclude(g => g.originalSheet)).ToList();
+            List<Game> games = (_context.Games.Include(g => g.Accesses).Include(g => g.gameSheet).ThenInclude(g => g.originalSheet)).Where(g => GameIDs.Contains(g.ID)).ToList();
             List<SearchGame> results = new List<SearchGame>();
             List<Task> tasks = new List<Task>();
             foreach(Game game in games)

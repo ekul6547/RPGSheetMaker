@@ -18,8 +18,9 @@
     @foreach (TutorialSection s in Model.Sections)
     {
         <hr />
-        <h2>@s.Header</h2>
-
+        <h2 style="display:inline">@s.Header</h2>
+        <a asp-controller="Tutorials" asp-action="Edit" asp-route-id="@s.ID" class="btn btn-toolbar" style="float:right;display:inline">Edit Section</a>
+        <br /><br />
         <div class="container" style="margin-left:30px">
             @s.HTMLContent
         </div>

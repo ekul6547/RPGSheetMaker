@@ -210,8 +210,8 @@ namespace RPGSheet2
 
         public static class HashID
         {
-            const int HashLength = 8;
-            const string HashDict = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
+            public const int HashLength = 8;
+            public const string HashDict = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
 
             public static string GenHash(int ID)
             {
