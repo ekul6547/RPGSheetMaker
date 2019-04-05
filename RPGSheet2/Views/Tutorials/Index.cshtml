@@ -22,7 +22,7 @@
         <a asp-controller="Tutorials" asp-action="Edit" asp-route-id="@s.ID" class="btn btn-toolbar" style="float:right;display:inline">Edit Section</a>
         <br /><br />
         <div class="container" style="margin-left:30px">
-            @s.HTMLContent
+            @Html.Raw(s.HTMLContent)
         </div>
     }
     <br /><br />
@@ -31,3 +31,5 @@
         <a class="btn btn-success" asp-action="Add" asp-route-id="@Model.ID">+ Add Section</a>
     </p>
 }
+<hr />
+<p>Was this page not helpful? Contact me directly via email: <b>lukemeppem@outlook.com</b></p>
